@@ -84,3 +84,23 @@ func IsHttpsURL(s string) bool {
 		return m
 	}
 }
+
+func IsMobilePhone(m string) bool {
+	p := `^\+?[0-9]{6,15}$`
+	match, err := regexp.MatchString(p, m)
+	if err != nil {
+		return false
+	}
+	return match
+}
+
+func IsLegalDataId(str string) bool {
+
+	p := `^[a-zA-Z0-9_\-]{1,40}$`
+
+	matched, err := regexp.MatchString(p, str)
+	if err != nil {
+		return false
+	}
+	return matched
+}
