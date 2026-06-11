@@ -1,11 +1,58 @@
 package AnyPro
 
-import "strconv"
+import (
+	"strconv"
+)
 
 type NumberType interface {
 	~int | ~int8 | ~int16 | ~int32 | ~int64 |
-		~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 |
-		~float32 | ~float64
+	~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 |
+	~float32 | ~float64
+}
+
+func AsNumber[T NumberType](d any) (T, bool) {
+
+	var zero T
+	if d == nil {
+		return zero, false
+	}
+
+	switch v := d.(type) {
+	case string:
+		// 尝试转 float64，再强制转换为 T
+		if f, err := strconv.ParseFloat(v, 64); err == nil {
+			return castNumber[T](f), true
+		} else {
+			return zero, false
+		}
+	case float64:
+		return castNumber[T](v), true
+	case float32:
+		return castNumber[T](float64(v)), true
+	case int:
+		return castNumber[T](float64(v)), true
+	case int8:
+		return castNumber[T](float64(v)), true
+	case int16:
+		return castNumber[T](float64(v)), true
+	case int32:
+		return castNumber[T](float64(v)), true
+	case int64:
+		return castNumber[T](float64(v)), true
+	case uint:
+		return castNumber[T](float64(v)), true
+	case uint8:
+		return castNumber[T](float64(v)), true
+	case uint16:
+		return castNumber[T](float64(v)), true
+	case uint32:
+		return castNumber[T](float64(v)), true
+	case uint64:
+		return castNumber[T](float64(v)), true
+	default:
+		// 不支持的类型
+		return zero, false
+	}
 }
 
 func Any2Number[T NumberType](d interface{}) T {
